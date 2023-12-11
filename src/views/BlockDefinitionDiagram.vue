@@ -26,8 +26,8 @@ import { useRouter } from "vue-router"
 import { DndPanel, Menu, Control, SelectionSelect, Snapshot, lfJson2Xml, lfXml2Json } from "@logicflow/extension";
 import { PolylineEdge, PolylineEdgeModel } from "@logicflow/core";
 import { class_diagram_radius } from "@/components/CustomNode/index"
-import { odc, hara, safety_goal, functional_safety_requirement } from "@/components/CustomNode/RequirementDiagram/index"
-import { containment, dependency_copy, dependency_derive, dependency_satisfy, dependency_refine } from "@/components/CustomEdge/requirementDiagram"
+import { ann, fmea, object_perception } from "@/components/CustomNode/BlockDefinitionDiagram/index"
+import { generalization, dependency, aggregation, composition } from "@/components/CustomEdge/blockDefinitionDiagram"
 import "@logicflow/extension/lib/style/index.css";
 import { exportJson } from "@/utils/index"
 import { useDiagramStore } from '@/stores/diagram'
@@ -55,7 +55,6 @@ onMounted(() => {
     initMenu()
     initListener()
     registerCustomNode()
-    console.log(useDiagramStore().getFile)
     lf.render(useDiagramStore().getFile);
     useDiagramStore().clearFile()
 })
@@ -76,96 +75,103 @@ const initDndPanel = () => {
         },
         {
             type: 'class_diagram_radius',
-            label: 'design constraint',
+            label: 'component',
             properties: {
-                title: 'design constraint',
-                type: 'design constraint'
+                title: 'component',
+                type: 'component'
             },
             icon: 'src/assets/svg/圆角矩形.svg',
         },
         {
             type: 'class_diagram_radius',
-            label: 'funtional requirement',
+            label: 'location determination',
             properties: {
-                title: 'funtional requirement',
-                type: 'funtional requirement'
+                title: 'location determination',
+                iconClass: 'AI-component',
+                type: 'location determination'
             },
-            icon: 'src/assets/svg/圆角矩形.svg',
+            icon: 'src/assets/svg/AIcomponent.svg',
         },
         {
-            type: 'safety_goal',
+            type: 'class_diagram_radius',
             properties: {
-                title: 'safety goal',
-                type: 'safety goal'
+                title: 'excecution control',
+                iconClass: 'AI-component',
+                type: 'excecution control'
             },
-            label: 'safety goal',
-            icon: 'src/assets/svg/圆角矩形.svg',
+            label: 'excecution control',
+            icon: 'src/assets/svg/AIcomponent.svg',
         },
         {
-            type: 'functional_safety_requirement',
+            type: 'class_diagram_radius',
             properties: {
-                title: 'functional safety requirement',
-                type: 'functional safety requirement'
+                title: 'path planning',
+                iconClass: 'AI-component',
+                type: 'path planning',
             },
-            label: 'functional safety requirement',
-            icon: 'src/assets/svg/圆角矩形.svg',
+            label: 'path planning',
+            icon: 'src/assets/svg/AIcomponent.svg',
         },
         {
-            type: 'odc',
+            type: 'object_perception',
             properties: {
-                title: 'ODC',
-                type: 'ODC'
+                title: 'objects perception',
+                iconClass: 'AI-component',
+                type: 'objects perception',
             },
-            label: 'ODC',
-            icon: 'src/assets/svg/圆角矩形.svg',
+            label: 'objects perception',
+            icon: 'src/assets/svg/AIcomponent.svg',
         },
         {
-            type: 'hara',
+            type: 'ann',
             properties: {
-                title: 'HARA',
-                type: 'HARA'
+                title: 'ANN',
+                iconClass: 'AI-component',
+                type: 'ANN',
             },
-            label: 'HARA',
-            icon: 'src/assets/svg/圆角矩形.svg',
+            label: 'ANN',
+            icon: 'src/assets/svg/AIcomponent.svg',
         },
         {
-            label: 'containment',
-            icon: 'src/assets/svg/containment.svg',
+            type: 'fmea',
+            properties: {
+                title: 'FMEA',
+                type: 'FMEA',
+            },
+            label: 'FMEA',
+            icon: 'src/assets/svg/圆角矩形.svg',
+        },
+
+        {
+            label: 'generalization',
+            icon: 'src/assets/svg/generalization.svg',
             callback: () => {
-                lf.setDefaultEdgeType("containment");
-                selectedEdgeType = 'containment'
+                lf.setDefaultEdgeType("generalization");
+                selectedEdgeType = 'generalization'
             }
         },
         {
-            label: 'copy',
+            label: 'dependency',
             icon: 'src/assets/svg/dependency.svg',
             callback: () => {
-                lf.setDefaultEdgeType("dependency_copy");
-                selectedEdgeType = 'dependency_copy'
+                lf.setDefaultEdgeType("dependency");
+                selectedEdgeType = 'dependency'
             }
         },
         {
-            label: 'derive',
-            icon: 'src/assets/svg/dependency.svg',
+            label: 'aggregation',
+            icon: 'src/assets/svg/aggregation.svg',
             callback: () => {
-                lf.setDefaultEdgeType("dependency_derive");
-                selectedEdgeType = 'dependency_derive'
+                lf.setDefaultEdgeType("aggregation");
+                selectedEdgeType = 'aggregation'
             }
         },
         {
-            label: 'satisfy',
-            icon: 'src/assets/svg/dependency.svg',
+            label: 'composition',
+            icon: 'src/assets/svg/composition.svg',
             callback: () => {
-                lf.setDefaultEdgeType("dependency_satisfy");
-                selectedEdgeType = 'dependency_satisfy'
-            }
-        },
-        {
-            label: 'refine',
-            icon: 'src/assets/svg/dependency.svg',
-            callback: () => {
-                lf.setDefaultEdgeType("dependency_refine")
-                selectedEdgeType = 'dependency_refine'
+                lf.setDefaultEdgeType("composition");
+                selectedEdgeType = 'composition'
             }
         },
     ]);
@@ -218,18 +224,40 @@ const initMenu = () => {
 }
 const initListener = () => {
     lf.on("connection:not-allowed", ({ msg }) => {
-        ElMessage.error(msg)
+        msg && ElMessage.error(msg)
     });
     lf.on("anchor:drop", ({ _, __, nodeModel, edgeModel }) => {
 
         const targetNode = lf.getNodeModelById(edgeModel.targetNodeId)
-        if (nodeModel.type == 'functional_safety_requirement' && targetNode.type == 'safety_goal') {
-            if (selectedEdgeType !== 'dependency_refine') {
-                lf.deleteEdge(edgeModel.id)
-                ElMessage.error('safety goal 与 functional safety requirement之间的关系只能是refine')
-            }
-        }
+        // if (nodeModel.type == 'functional_safety_requirement') {
+        //     if (!(selectedEdgeType == 'dependency_refine' && targetNode.type == 'safety_goal')) {
+        //         lf.deleteEdge(edgeModel.id)
+        //         ElMessage.error('safety goal 与 functional safety requirement之间的关系只能是refine')
+        //     }
+        // }
     })
+
+    lf.on("node:dnd-add", ({ data }) => {
+        //ObjectPerception自动连接一个ANN
+        if (data.type === 'object_perception') {
+            const sourceNodeId = data.id
+            const targetNodeId = lf.addNode({
+                type: 'ann',
+                x: data.x + 180,
+                y: data.y + 100,
+                properties: {
+                    title: 'ANN',
+                    iconClass: 'AI-component',
+                    type: 'ANN',
+                },
+            }).id
+            lf.addEdge({
+                type: 'composition',
+                sourceNodeId,
+                targetNodeId
+            })
+        }
+    });
 }
 const initTreeInput = (prop) => {
     //构造treeData，写一个递归函数
@@ -240,6 +268,7 @@ const initTreeInput = (prop) => {
 
             for (const [key, value] of Object.entries(input)) {
                 const node = { id: key, label: key };
+                console.log(key)
                 if (whiteList.indexOf(key) != -1) {//解决resize后出现nodeSize问题
                     continue;
                 }
@@ -287,7 +316,7 @@ const saveProperties = () => {
     showDrawer.value = false
 }
 const registerCustomNode = () => {
-    lf.batchRegister([class_diagram_radius, odc, hara, safety_goal, functional_safety_requirement, containment, dependency_copy, dependency_derive, dependency_satisfy, dependency_refine])
+    lf.batchRegister([class_diagram_radius, ann, fmea, object_perception, generalization, dependency, aggregation, composition])
 }
 
 </script>
@@ -338,11 +367,13 @@ const registerCustomNode = () => {
     }
 
     .AI-component {
-        width: 24px;
-        height: 24px;
-        background-image: url('../assets/svg/AI.svg');
+        width: 32px;
+        height: 32px;
+        background-image: url('../assets/svg/AIComp.svg');
     }
 }
+
+
 
 /* 遮罩层 */
 .el-overlay {
@@ -361,4 +392,3 @@ const registerCustomNode = () => {
     background-image: url('../assets/svg/home.svg');
 }
 </style>
-@/components/CustomEdge/requirementDiagram.ts@/components/CustomNode/RequirementDiagram/requirementDiagram

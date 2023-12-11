@@ -17,6 +17,45 @@
             <el-button @click="saveProperties">保存</el-button>
         </div>
     </el-drawer>
+    <el-dialog v-model="dialogVisible" title="创建property" width="50%" :before-close="deleteProperty">
+        <div v-for="property, index in properties" :key="index" class="property">
+            {{ property.name }}{{ property.type ? ':' + property.type : '' }}
+            {{ property.value ? '=' + property.value : '' }}
+            <el-button @click="removeProperty(index)">
+                <el-icon>
+                    <Close />
+                </el-icon>
+            </el-button>
+        </div>
+        <el-form :model="form" label-width="120px" :rules="rules">
+            <el-form-item label="name">
+                <el-input v-model="form.name"></el-input>
+            </el-form-item>
+            <el-form-item label="type">
+                <el-input v-model="form.type"></el-input>
+            </el-form-item>
+            <el-form-item label="value">
+                <el-input v-model="form.value"></el-input>
+            </el-form-item>
+        </el-form>
+        <div style="text-align: center;">
+            <el-button @click="addProperty">
+                <el-icon>
+                    <Plus />
+                </el-icon>
+                添加属性
+            </el-button>
+        </div>
+
+        <template #footer>
+            <span class="dialog-footer">
+                <el-button @click="deleteProperty">Cancel</el-button>
+                <el-button type="primary" @click="createProperty">
+                    Confirm
+                </el-button>
+            </span>
+        </template>
+    </el-dialog>
 </template>
 <script setup>
 import LogicFlow from "@logicflow/core";
@@ -25,12 +64,15 @@ import { reactive, ref, onMounted } from "vue"
 import { useRouter } from "vue-router"
 import { DndPanel, Menu, Control, SelectionSelect, Snapshot, lfJson2Xml, lfXml2Json } from "@logicflow/extension";
 import { PolylineEdge, PolylineEdgeModel } from "@logicflow/core";
-import { class_diagram_radius } from "@/components/CustomNode/index"
-import { odc, hara, safety_goal, functional_safety_requirement } from "@/components/CustomNode/RequirementDiagram/index"
-import { containment, dependency_copy, dependency_derive, dependency_satisfy, dependency_refine } from "@/components/CustomEdge/requirementDiagram"
+import { class_diagram_radius, svg, class_diagram } from "@/components/CustomNode/index"
+import { } from "@/components/CustomNode/InternalBlockDiagram/index"
+import { equal_connector, bidirection_connector, unidirection_connector } from "@/components/CustomEdge/internalBlockDiagram"
+import { generalization, dependency, aggregation, composition } from "@/components/CustomEdge/blockDefinitionDiagram"
 import "@logicflow/extension/lib/style/index.css";
 import { exportJson } from "@/utils/index"
 import { useDiagramStore } from '@/stores/diagram'
+import { cloneDeep } from 'lodash'
+
 let lf = null
 const container = ref(null)
 const showDrawer = ref(false)
@@ -39,7 +81,37 @@ let propertiesTmp = null
 let selectedEdgeType = ''
 const treeData = reactive([])
 const router = useRouter()
-
+const dialogVisible = ref(false)
+let currentPropertyId = null
+const form = reactive(
+    {
+        name: '',
+        type: '',
+        value: ''
+    }
+)
+const rules = reactive({
+    name: [
+        { required: true, message: 'Please input name', trigger: 'blur' },
+    ],
+    type: [{ required: true, message: 'Please input type', trigger: 'blur' },]
+})
+const properties = ref([])
+const clearForm = () => {
+    Object.keys(form).forEach(key => {
+        form[key] = ''
+    })
+}
+const clearProperties = () => {
+    properties.value = []
+}
+const addProperty = () => {
+    properties.value.push(cloneDeep(form))
+    clearForm()
+}
+const removeProperty = (index) => {
+    properties.value.splice(index, 1)
+}
 onMounted(() => {
     lf = new LogicFlow({
         container: container.value,
@@ -55,12 +127,9 @@ onMounted(() => {
     initMenu()
     initListener()
     registerCustomNode()
-    console.log(useDiagramStore().getFile)
     lf.render(useDiagramStore().getFile);
     useDiagramStore().clearFile()
 })
-
-
 const initDndPanel = () => {
     lf.extension.dndPanel.setPatternItems([
         {
@@ -76,96 +145,94 @@ const initDndPanel = () => {
         },
         {
             type: 'class_diagram_radius',
-            label: 'design constraint',
+            label: 'component',
             properties: {
-                title: 'design constraint',
-                type: 'design constraint'
+                title: 'component',
+                type: 'component'
             },
             icon: 'src/assets/svg/圆角矩形.svg',
         },
         {
             type: 'class_diagram_radius',
-            label: 'funtional requirement',
+            label: 'AI Component',
             properties: {
-                title: 'funtional requirement',
-                type: 'funtional requirement'
+                title: 'AI Component',
+                iconClass: 'AI-component',
+                type: 'AI Component'
             },
-            icon: 'src/assets/svg/圆角矩形.svg',
+            icon: 'src/assets/svg/AIcomponent.svg',
         },
         {
-            type: 'safety_goal',
+            type: 'svg',
             properties: {
-                title: 'safety goal',
-                type: 'safety goal'
+                src: 'src/assets/svg/syncBar.svg'
             },
-            label: 'safety goal',
-            icon: 'src/assets/svg/圆角矩形.svg',
+            label: 'Synchronous barrier',
+            icon: 'src/assets/svg/syncBar.svg',
         },
         {
-            type: 'functional_safety_requirement',
+            type: 'svg',
             properties: {
-                title: 'functional safety requirement',
-                type: 'functional safety requirement'
+                src: 'src/assets/svg/legVeri.svg'
             },
-            label: 'functional safety requirement',
-            icon: 'src/assets/svg/圆角矩形.svg',
+            label: 'Legal verification',
+            icon: 'src/assets/svg/legVeri.svg',
         },
         {
-            type: 'odc',
+            type: 'svg',
             properties: {
-                title: 'ODC',
-                type: 'ODC'
+                src: 'src/assets/svg/disp.svg'
             },
-            label: 'ODC',
-            icon: 'src/assets/svg/圆角矩形.svg',
+            label: 'Dispatcher',
+            icon: 'src/assets/svg/disp.svg',
         },
         {
-            type: 'hara',
+            type: 'svg',
             properties: {
-                title: 'HARA',
-                type: 'HARA'
+                src: 'src/assets/svg/mSelect.svg'
             },
-            label: 'HARA',
-            icon: 'src/assets/svg/圆角矩形.svg',
+            label: 'Multi-selector',
+            icon: 'src/assets/svg/mSelect.svg',
         },
         {
-            label: 'containment',
-            icon: 'src/assets/svg/containment.svg',
+            type: 'class_diagram',
+            label: 'property',
+            properties: {
+                title: 'property',
+                type: 'property'
+            },
+            icon: 'src/assets/svg/矩形.svg',
+        },
+        {
+            label: 'item flow',
+            icon: 'src/assets/svg/itemFlow.svg',
             callback: () => {
-                lf.setDefaultEdgeType("containment");
-                selectedEdgeType = 'containment'
+                lf.setDefaultEdgeType("polyline");
+                selectedEdgeType = 'polyline'
             }
         },
         {
-            label: 'copy',
-            icon: 'src/assets/svg/dependency.svg',
+            label: 'equal connector',
+            icon: 'src/assets/svg/connector.svg',
             callback: () => {
-                lf.setDefaultEdgeType("dependency_copy");
-                selectedEdgeType = 'dependency_copy'
+                lf.setDefaultEdgeType("equal_connector");
+                selectedEdgeType = 'equal_connector'
             }
         },
         {
-            label: 'derive',
-            icon: 'src/assets/svg/dependency.svg',
+            label: 'bidirecion connector',
+            icon: 'src/assets/svg/connector.svg',
             callback: () => {
-                lf.setDefaultEdgeType("dependency_derive");
-                selectedEdgeType = 'dependency_derive'
+                lf.setDefaultEdgeType("bidirection_connector");
+                selectedEdgeType = 'bidirection_connector'
             }
         },
         {
-            label: 'satisfy',
-            icon: 'src/assets/svg/dependency.svg',
+            label: 'unidirecion connector',
+            icon: 'src/assets/svg/connector.svg',
             callback: () => {
-                lf.setDefaultEdgeType("dependency_satisfy");
-                selectedEdgeType = 'dependency_satisfy'
-            }
-        },
-        {
-            label: 'refine',
-            icon: 'src/assets/svg/dependency.svg',
-            callback: () => {
-                lf.setDefaultEdgeType("dependency_refine")
-                selectedEdgeType = 'dependency_refine'
+                lf.setDefaultEdgeType("unidirection_connector");
+                selectedEdgeType = 'unidirection_connector'
             }
         },
     ]);
@@ -218,22 +285,29 @@ const initMenu = () => {
 }
 const initListener = () => {
     lf.on("connection:not-allowed", ({ msg }) => {
-        ElMessage.error(msg)
+        msg && ElMessage.error(msg)
     });
+    lf.on("node:dnd-add", ({ data }) => {
+        if (data.type == 'class_diagram') {
+            currentPropertyId = data.id
+            dialogVisible.value = true
+        }
+    });
+
     lf.on("anchor:drop", ({ _, __, nodeModel, edgeModel }) => {
 
         const targetNode = lf.getNodeModelById(edgeModel.targetNodeId)
-        if (nodeModel.type == 'functional_safety_requirement' && targetNode.type == 'safety_goal') {
-            if (selectedEdgeType !== 'dependency_refine') {
-                lf.deleteEdge(edgeModel.id)
-                ElMessage.error('safety goal 与 functional safety requirement之间的关系只能是refine')
-            }
-        }
+        // if (nodeModel.type == 'functional_safety_requirement') {
+        //     if (!(selectedEdgeType == 'dependency_refine' && targetNode.type == 'safety_goal')) {
+        //         lf.deleteEdge(edgeModel.id)
+        //         ElMessage.error('safety goal 与 functional safety requirement之间的关系只能是refine')
+        //     }
+        // }
     })
 }
 const initTreeInput = (prop) => {
     //构造treeData，写一个递归函数
-    const whiteList = ['nodeSize', 'iconClass', 'type']
+    const whiteList = ['nodeSize', 'iconClass', 'type', 'src']
     function convertObjectToTreeArray(obj) {
         function traverse(input) {
             const treeArray = [];
@@ -287,7 +361,23 @@ const saveProperties = () => {
     showDrawer.value = false
 }
 const registerCustomNode = () => {
-    lf.batchRegister([class_diagram_radius, odc, hara, safety_goal, functional_safety_requirement, containment, dependency_copy, dependency_derive, dependency_satisfy, dependency_refine])
+    lf.batchRegister([class_diagram_radius, svg, class_diagram, equal_connector, bidirection_connector, unidirection_connector])
+}
+const createProperty = () => {
+    //构建properties
+    const nodeProperties = {}
+    properties.value.forEach(item => {
+        nodeProperties[`${item.name} : ${item.type}`] = item.value
+    })
+    console.log(nodeProperties)
+    lf.setProperties(currentPropertyId, nodeProperties)
+    dialogVisible.value = false
+}
+const deleteProperty = () => {
+    dialogVisible.value = false
+    lf.deleteNode(currentPropertyId)
+    clearForm()
+    clearProperties()
 }
 
 </script>
@@ -317,13 +407,18 @@ const registerCustomNode = () => {
 }
 
 .uml-wrapper {
-    border: 1px solid #000;
     border-radius: 4px;
+}
+
+.uml-wrapper,
+.class-wrapper {
+    border: 1px solid #000;
     position: relative;
     word-wrap: break-word;
     background-color: #fff;
 
-    .uml-head {
+    .uml-head,
+    .class-head {
         text-align: center;
         border-bottom: 1px solid #000;
         line-height: 40px;
@@ -338,9 +433,27 @@ const registerCustomNode = () => {
     }
 
     .AI-component {
-        width: 24px;
-        height: 24px;
-        background-image: url('../assets/svg/AI.svg');
+        width: 32px;
+        height: 32px;
+        background-image: url('../assets/svg/AIComp.svg');
+    }
+}
+
+.property {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin-bottom: 20px;
+
+}
+
+.svg-wrapper {
+    width: 100%;
+    height: 100%;
+
+    img {
+        width: 100%;
+        height: 100%;
     }
 }
 
@@ -361,4 +474,3 @@ const registerCustomNode = () => {
     background-image: url('../assets/svg/home.svg');
 }
 </style>
-@/components/CustomEdge/requirementDiagram.ts@/components/CustomNode/RequirementDiagram/requirementDiagram

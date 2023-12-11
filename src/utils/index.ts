@@ -32,3 +32,5 @@ export const readJson = (file: File) => {
     reader.readAsText(file);
   });
 };
+
+

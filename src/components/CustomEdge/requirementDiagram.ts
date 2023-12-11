@@ -16,11 +16,29 @@ class Containment extends PolylineEdge {
       stroke: stroke,
       strokeWidth: strokeWidth,
     };
-    // 半箭
-    return h("path", {
-      ...pathAttr,
-      d: "M -8 0 A 8 8 0 0 0 8 0 M 0 -8 A 8 8 0 0 0 0 8 M -5 -5 L 5 5 M 5 -5 L -5 5",
-    });
+    // 半圆
+    return h("g", { transform: "translate(-4, 0)" }, [
+      h("circle", {
+        ...pathAttr,
+        cx: 0,
+        cy: 0,
+        r: 8,
+      }),
+      h("line", {
+        ...pathAttr,
+        x1: -8,
+        y1: 0,
+        x2: 8,
+        y2: 0,
+      }),
+      h("line", {
+        ...pathAttr,
+        x1: 0,
+        y1: -8,
+        x2: 0,
+        y2: 8,
+      }),
+    ]);
   }
 }
 export const containment = {
@@ -29,11 +47,10 @@ export const containment = {
   model: ContainmentModel,
 };
 
-
 //依赖关系-重用
 class DependencyCopyModel extends PolylineEdgeModel {
   setAttributes() {
-      this.updateText('copy')
+    this.updateText("copy");
   }
   getEdgeStyle() {
     const style = super.getEdgeStyle();
@@ -53,7 +70,7 @@ class DependencyCopy extends PolylineEdge {
     // 半箭
     return h("path", {
       ...pathAttr,
-      d: "M -8 -8 L 8 8 M 8 -8 L -8 8",
+      d: "M -8 -8 L 0 0 M -8 8 L 0 0",
     });
   }
 }
@@ -66,8 +83,8 @@ export const dependency_copy = {
 //依赖关系-精华
 class DependencyDeriveModel extends PolylineEdgeModel {
   setAttributes() {
-    this.updateText('derive')
-}
+    this.updateText("derive");
+  }
   getEdgeStyle() {
     const style = super.getEdgeStyle();
     style.strokeDasharray = "4 4";
@@ -86,7 +103,7 @@ class DependencyDerive extends PolylineEdge {
     // 半箭
     return h("path", {
       ...pathAttr,
-      d: "M -8 -8 L 8 8 M 8 -8 L -8 8",
+      d: "M -8 -8 L 0 0 M -8 8 L 0 0",
     });
   }
 }
@@ -98,8 +115,8 @@ export const dependency_derive = {
 //依赖关系-满足
 class DependencySatisfyModel extends PolylineEdgeModel {
   setAttributes() {
-    this.updateText('satisfy')
-}
+    this.updateText("satisfy");
+  }
   getEdgeStyle() {
     const style = super.getEdgeStyle();
     style.strokeDasharray = "4 4";
@@ -118,7 +135,7 @@ class DependencySatisfy extends PolylineEdge {
     // 半箭
     return h("path", {
       ...pathAttr,
-      d: "M -8 -8 L 8 8 M 8 -8 L -8 8",
+      d: "M -8 -8 L 0 0 M -8 8 L 0 0",
     });
   }
 }
@@ -131,8 +148,8 @@ export const dependency_satisfy = {
 //依赖关系-精华
 class DependencyRefineModel extends PolylineEdgeModel {
   setAttributes() {
-    this.updateText('refine')
-}
+    this.updateText("refine");
+  }
   getEdgeStyle() {
     const style = super.getEdgeStyle();
     style.strokeDasharray = "4 4";
@@ -151,7 +168,7 @@ class DependencyRefine extends PolylineEdge {
     // 半箭
     return h("path", {
       ...pathAttr,
-      d: "M -8 -8 L 8 8 M 8 -8 L -8 8",
+      d: "M -8 -8 L 0 0 M -8 8 L 0 0",
     });
   }
 }
