@@ -136,10 +136,11 @@ const initDndPanel = () => {
             type: 'fmea',
             properties: {
                 title: 'FMEA',
+                iconClass: 'AI-component',
                 type: 'FMEA',
             },
             label: 'FMEA',
-            icon: 'src/assets/svg/圆角矩形.svg',
+            icon: 'src/assets/svg/AIcomponent.svg',
         },
 
         {
@@ -355,7 +356,7 @@ const registerCustomNode = () => {
     .uml-head {
         text-align: center;
         border-bottom: 1px solid #000;
-        line-height: 40px;
+        line-height: 39px;
     }
 
     .icon {

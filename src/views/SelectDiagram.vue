@@ -23,11 +23,19 @@
       </el-sub-menu>
     </el-menu>
     <div class="select-diagram">
-      <el-breadcrumb separator="/">
-        <el-breadcrumb-item :to="{ path: '/' }">Home</el-breadcrumb-item>
-        <el-breadcrumb-item :to="{ path: '/myProject' }">My Project</el-breadcrumb-item>
-        <el-breadcrumb-item>{{ diagramStore.getProjectName }}</el-breadcrumb-item>
-      </el-breadcrumb>
+      <div class="header">
+        <el-breadcrumb separator="/">
+          <el-breadcrumb-item :to="{ path: '/' }">Home</el-breadcrumb-item>
+          <el-breadcrumb-item :to="{ path: '/myProject' }">My Project</el-breadcrumb-item>
+          <el-breadcrumb-item>{{ diagramStore.getProjectName }}</el-breadcrumb-item>
+        </el-breadcrumb>
+        <el-upload class="upload-demo" :limit="1" :auto-upload="false" :show-file-list="false" :on-change="getFile">
+          <template #trigger>
+            <el-button type="primary">Select Json</el-button>
+          </template>
+        </el-upload>
+      </div>
+
       <el-dialog v-model="dialogVisible" title="Add Diagram" width="50%">
         <el-form :model="form" label-width="140px" :rules="rules">
           <el-form-item label="Diagram Name" prop="diagramName">
@@ -62,7 +70,6 @@
   
 <script setup lang='ts'>
 import { ref, reactive } from 'vue'
-import router from "@/router";
 import { UploadFile } from 'element-plus'
 import { useRouter } from "vue-router"
 import { useDiagramStore } from '@/stores/diagram'
@@ -70,13 +77,14 @@ import { readJson } from '@/utils/index'
 const { push } = useRouter()
 const diagramStore = useDiagramStore()
 
-const getFile = async (file: UploadFile, name: string) => {
+const getFile = async (file: UploadFile) => {
+  console.log(file)
   if (!file.name.endsWith('.json')) {
     alert("请上传JSON文件")
   } else {
     diagramStore.file = await readJson(file.raw as File) as Object
-    router.push({
-      name
+    push({
+      name: diagramType.value
     })
   }
 }
@@ -98,7 +106,7 @@ const handleSelect = (index: string) => {
 }
 const handleSubmit = () => {
   diagramStore.diagram = form
-  router.push({
+  push({
     name: diagramType.value
   })
   dialogVisible.value = false
@@ -144,6 +152,11 @@ const handleSubmit = () => {
       .add {
         margin: 64px 64px 64px 0
       }
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
     }
   }
 

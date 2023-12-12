@@ -11,7 +11,7 @@ class EqualConnectorModel extends PolylineEdgeModel {
 class EqualConnector extends PolylineEdge {
   getEndArrow() {
     //渲染文字
-    return h("g", { transform: "translate(-12, 16)" }, [
+    return h("g", { transform: "translate(-12, 20)" }, [
       h(
         "text",
         {
@@ -23,7 +23,7 @@ class EqualConnector extends PolylineEdge {
   }
   getStartArrow() {
     //渲染文字
-    return h("g", { transform: "translate(4, 16)" }, [
+    return h("g", { transform: "translate(4, 20)" }, [
       h(
         "text",
         {
@@ -52,7 +52,7 @@ class BidirectionConnectorModel extends PolylineEdgeModel {
 class BidirectionConnector extends PolylineEdge {
   getStartArrow() {
     //渲染文字
-    return h("g", { transform: "translate(4, 16)" }, [
+    return h("g", { transform: "translate(4, 20)" }, [
       h(
         "text",
         {
@@ -64,7 +64,7 @@ class BidirectionConnector extends PolylineEdge {
   }
   getEndArrow() {
     //渲染文字
-    return h("g", { transform: "translate(-20, 16)" }, [
+    return h("g", { transform: "translate(-20, 20)" }, [
       h(
         "text",
         {

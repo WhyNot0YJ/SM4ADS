@@ -64,8 +64,8 @@ import { reactive, ref, onMounted } from "vue"
 import { useRouter } from "vue-router"
 import { DndPanel, Menu, Control, SelectionSelect, Snapshot, lfJson2Xml, lfXml2Json } from "@logicflow/extension";
 import { PolylineEdge, PolylineEdgeModel } from "@logicflow/core";
-import { class_diagram_radius, svg, class_diagram } from "@/components/CustomNode/index"
-import { } from "@/components/CustomNode/InternalBlockDiagram/index"
+import { svg, class_diagram } from "@/components/CustomNode/index"
+import { port_component } from "@/components/CustomNode/InternalBlockDiagram/index"
 import { equal_connector, bidirection_connector, unidirection_connector } from "@/components/CustomEdge/internalBlockDiagram"
 import { generalization, dependency, aggregation, composition } from "@/components/CustomEdge/blockDefinitionDiagram"
 import "@logicflow/extension/lib/style/index.css";
@@ -144,7 +144,7 @@ const initDndPanel = () => {
             }
         },
         {
-            type: 'class_diagram_radius',
+            type: 'port_component',
             label: 'component',
             properties: {
                 title: 'component',
@@ -153,7 +153,7 @@ const initDndPanel = () => {
             icon: 'src/assets/svg/圆角矩形.svg',
         },
         {
-            type: 'class_diagram_radius',
+            type: 'port_component',
             label: 'AI Component',
             properties: {
                 title: 'AI Component',
@@ -361,7 +361,7 @@ const saveProperties = () => {
     showDrawer.value = false
 }
 const registerCustomNode = () => {
-    lf.batchRegister([class_diagram_radius, svg, class_diagram, equal_connector, bidirection_connector, unidirection_connector])
+    lf.batchRegister([port_component, svg, class_diagram, equal_connector, bidirection_connector, unidirection_connector])
 }
 const createProperty = () => {
     //构建properties
@@ -410,6 +410,10 @@ const deleteProperty = () => {
     border-radius: 4px;
 }
 
+foreignObject {
+    overflow: visible;
+}
+
 .uml-wrapper,
 .class-wrapper {
     border: 1px solid #000;
@@ -421,7 +425,7 @@ const deleteProperty = () => {
     .class-head {
         text-align: center;
         border-bottom: 1px solid #000;
-        line-height: 40px;
+        line-height: 39px;
     }
 
     .icon {
@@ -436,6 +440,35 @@ const deleteProperty = () => {
         width: 32px;
         height: 32px;
         background-image: url('../assets/svg/AIComp.svg');
+    }
+
+    .port {
+        width: 20px;
+        height: 20px;
+        border: 1px solid #000;
+        background-color: white;
+        position: absolute;
+        text-align: center;
+    }
+
+    .pleft {
+        top: calc(50% - 10px);
+        left: -10px;
+    }
+
+    .pright {
+        top: calc(50% - 10px);
+        right: -10px;
+    }
+
+    .ptop {
+        top: -10px;
+        left: calc(50% - 10px);
+    }
+
+    .pbottom {
+        bottom: -10px;
+        left: calc(50% - 10px)
     }
 }
 
@@ -456,6 +489,7 @@ const deleteProperty = () => {
         height: 100%;
     }
 }
+
 
 /* 遮罩层 */
 .el-overlay {

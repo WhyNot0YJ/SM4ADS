@@ -326,7 +326,7 @@ const registerCustomNode = () => {
     .uml-head {
         text-align: center;
         border-bottom: 1px solid #000;
-        line-height: 40px;
+        line-height: 39px;
     }
 
     .icon {
