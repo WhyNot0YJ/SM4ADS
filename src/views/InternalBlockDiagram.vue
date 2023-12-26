@@ -1,18 +1,7 @@
 <template>
     <div class="container" ref="container"></div>
     <el-drawer v-model="showDrawer" direction="rtl" :with-header="true" title="编辑节点">
-        <el-tree :data="treeData" node-key="id" default-expand-all :expand-on-click-node="false">
-            <template #default="{ node, data }">
-                <span class="leaf-node" v-if="data.isLeaf">
-                    {{ data.label }} :
-                    <el-input v-model="data.value" placeholder="Please input" style="width: 120px;"
-                        @input="(value) => handleInput(value, data)" />
-                </span>
-                <span v-else class="parent-node">
-                    {{ data.label }}
-                </span>
-            </template>
-        </el-tree>
+        <EditProperties :propertiesTmp="propertiesTmp"></EditProperties>
         <div>
             <el-button @click="saveProperties">保存</el-button>
         </div>
@@ -64,8 +53,7 @@ import { reactive, ref, onMounted } from "vue"
 import { useRouter } from "vue-router"
 import { DndPanel, Menu, Control, SelectionSelect, Snapshot, lfJson2Xml, lfXml2Json } from "@logicflow/extension";
 import { PolylineEdge, PolylineEdgeModel } from "@logicflow/core";
-import { svg, class_diagram } from "@/components/CustomNode/index"
-import { port_component } from "@/components/CustomNode/InternalBlockDiagram/index"
+import { svg, class_diagram, port_component } from "@/components/CustomNode/index"
 import { equal_connector, bidirection_connector, unidirection_connector } from "@/components/CustomEdge/internalBlockDiagram"
 import { generalization, dependency, aggregation, composition } from "@/components/CustomEdge/blockDefinitionDiagram"
 import "@logicflow/extension/lib/style/index.css";
@@ -79,7 +67,6 @@ const showDrawer = ref(false)
 const currentNode = ref(null)
 let propertiesTmp = null
 let selectedEdgeType = ''
-const treeData = reactive([])
 const router = useRouter()
 const dialogVisible = ref(false)
 let currentPropertyId = null
@@ -275,7 +262,6 @@ const initMenu = () => {
                 callback: (node) => {
                     currentNode.value = node
                     propertiesTmp = JSON.parse(JSON.stringify(node.properties))
-                    initTreeInput(propertiesTmp)
                     showDrawer.value = true
                 }
             }
@@ -305,58 +291,9 @@ const initListener = () => {
         // }
     })
 }
-const initTreeInput = (prop) => {
-    //构造treeData，写一个递归函数
-    const whiteList = ['nodeSize', 'iconClass', 'type', 'src']
-    function convertObjectToTreeArray(obj) {
-        function traverse(input) {
-            const treeArray = [];
 
-            for (const [key, value] of Object.entries(input)) {
-                const node = { id: key, label: key };
-                if (whiteList.indexOf(key) != -1) {//解决resize后出现nodeSize问题
-                    continue;
-                }
-                if (typeof value === 'object' && value !== null) {
-                    node.value = undefined
-                    node.children = traverse(value);
-                    node.isLeaf = false
-                } else {
-                    node.value = value
-                    node.isLeaf = true
-                }
-                treeArray.push(node);
-            }
-
-            return treeArray;
-        }
-        return traverse(obj);
-
-    }
-
-    //每次清空treeData
-    treeData.length = 0
-    convertObjectToTreeArray(prop).forEach(item => {
-        treeData.push(item)
-    })
-
-}
-const handleInput = (value, node) => {
-    node.value = value
-    //修改properties
-    const setValueByKey = (obj, key, value) => {
-        Object.entries(obj).forEach(([prop, val]) => {
-            if (prop === key) {
-                obj[prop] = value;
-            } else if (typeof val === 'object' && val !== null) {
-                setValueByKey(val, key, value);
-            }
-        });
-    };
-    //同步propertiesTmp数据
-    setValueByKey(propertiesTmp, node.label, value)
-}
 const saveProperties = () => {
+    console.log(propertiesTmp)
     lf.setProperties(currentNode.value.id, JSON.parse(JSON.stringify(propertiesTmp)))
     showDrawer.value = false
 }
@@ -369,8 +306,9 @@ const createProperty = () => {
     properties.value.forEach(item => {
         nodeProperties[`${item.name} : ${item.type}`] = item.value
     })
-    console.log(nodeProperties)
     lf.setProperties(currentPropertyId, nodeProperties)
+    clearProperties()
+    clearForm()
     dialogVisible.value = false
 }
 const deleteProperty = () => {
@@ -396,9 +334,6 @@ const deleteProperty = () => {
     }
 }
 
-.outline {
-    border: 1px red solid
-}
 
 .leaf-node,
 .parent-node {
@@ -410,13 +345,9 @@ const deleteProperty = () => {
     border-radius: 4px;
 }
 
-foreignObject {
-    overflow: visible;
-}
 
 .uml-wrapper,
 .class-wrapper {
-    border: 1px solid #000;
     position: relative;
     word-wrap: break-word;
     background-color: #fff;
@@ -424,7 +355,6 @@ foreignObject {
     .uml-head,
     .class-head {
         text-align: center;
-        border-bottom: 1px solid #000;
         line-height: 39px;
     }
 
@@ -445,7 +375,6 @@ foreignObject {
     .port {
         width: 20px;
         height: 20px;
-        border: 1px solid #000;
         background-color: white;
         position: absolute;
         text-align: center;
@@ -506,5 +435,15 @@ foreignObject {
 
 .if-control-home {
     background-image: url('../assets/svg/home.svg');
+}
+</style>
+<style lang="less" scoped>
+:deep(foreignObject) {
+    overflow: visible;
+}
+
+:deep(.uml-wrapper-content) {
+    overflow: hidden;
+    height: 100%;
 }
 </style>

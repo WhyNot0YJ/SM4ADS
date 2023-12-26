@@ -1,18 +1,7 @@
 <template>
     <div class="container" ref="container"></div>
     <el-drawer v-model="showDrawer" direction="rtl" :with-header="true" title="编辑节点">
-        <el-tree :data="treeData" node-key="id" default-expand-all :expand-on-click-node="false">
-            <template #default="{ node, data }">
-                <span class="leaf-node" v-if="data.isLeaf">
-                    {{ data.label }} :
-                    <el-input v-model="data.value" placeholder="Please input" style="width: 120px;"
-                        @input="(value) => handleInput(value, data)" />
-                </span>
-                <span v-else class="parent-node">
-                    {{ data.label }}
-                </span>
-            </template>
-        </el-tree>
+        <EditProperties :propertiesTmp='propertiesTmp'></EditProperties>
         <div>
             <el-button @click="saveProperties">保存</el-button>
         </div>
@@ -31,13 +20,13 @@ import { containment, dependency_copy, dependency_derive, dependency_satisfy, de
 import "@logicflow/extension/lib/style/index.css";
 import { exportJson } from "@/utils/index"
 import { useDiagramStore } from '@/stores/diagram'
+import EditProperties from '@/components/EditProperties.vue'
 let lf = null
 const container = ref(null)
 const showDrawer = ref(false)
 const currentNode = ref(null)
 let propertiesTmp = null
 let selectedEdgeType = ''
-const treeData = reactive([])
 const router = useRouter()
 
 onMounted(() => {
@@ -105,9 +94,9 @@ const initDndPanel = () => {
             type: 'functional_safety_requirement',
             properties: {
                 title: 'functional safety requirement',
-                type: 'functional safety requirement'
+                type: 'FSR'
             },
-            label: 'functional safety requirement',
+            label: 'FSR',
             icon: 'src/assets/svg/圆角矩形.svg',
         },
         {
@@ -208,7 +197,6 @@ const initMenu = () => {
                 callback: (node) => {
                     currentNode.value = node
                     propertiesTmp = JSON.parse(JSON.stringify(node.properties))
-                    initTreeInput(propertiesTmp)
                     showDrawer.value = true
                 }
             }
@@ -231,57 +219,7 @@ const initListener = () => {
         }
     })
 }
-const initTreeInput = (prop) => {
-    //构造treeData，写一个递归函数
-    const whiteList = ['nodeSize', 'iconClass', 'type']
-    function convertObjectToTreeArray(obj) {
-        function traverse(input) {
-            const treeArray = [];
 
-            for (const [key, value] of Object.entries(input)) {
-                const node = { id: key, label: key };
-                if (whiteList.indexOf(key) != -1) {//解决resize后出现nodeSize问题
-                    continue;
-                }
-                if (typeof value === 'object' && value !== null) {
-                    node.value = undefined
-                    node.children = traverse(value);
-                    node.isLeaf = false
-                } else {
-                    node.value = value
-                    node.isLeaf = true
-                }
-                treeArray.push(node);
-            }
-
-            return treeArray;
-        }
-        return traverse(obj);
-
-    }
-
-    //每次清空treeData
-    treeData.length = 0
-    convertObjectToTreeArray(prop).forEach(item => {
-        treeData.push(item)
-    })
-
-}
-const handleInput = (value, node) => {
-    node.value = value
-    //修改properties
-    const setValueByKey = (obj, key, value) => {
-        Object.entries(obj).forEach(([prop, val]) => {
-            if (prop === key) {
-                obj[prop] = value;
-            } else if (typeof val === 'object' && val !== null) {
-                setValueByKey(val, key, value);
-            }
-        });
-    };
-    //同步propertiesTmp数据
-    setValueByKey(propertiesTmp, node.label, value)
-}
 const saveProperties = () => {
     lf.setProperties(currentNode.value.id, JSON.parse(JSON.stringify(propertiesTmp)))
     showDrawer.value = false
@@ -306,10 +244,6 @@ const registerCustomNode = () => {
     }
 }
 
-.outline {
-    border: 1px red solid
-}
-
 .leaf-node,
 .parent-node {
     display: inline-block;
@@ -317,15 +251,12 @@ const registerCustomNode = () => {
 }
 
 .uml-wrapper {
-    border: 1px solid #000;
     border-radius: 4px;
     position: relative;
     word-wrap: break-word;
-    background-color: #fff;
 
     .uml-head {
         text-align: center;
-        border-bottom: 1px solid #000;
         line-height: 39px;
     }
 

@@ -5,7 +5,7 @@
   <router-view></router-view>
 </template>
 
-<style>
+<style lang="less">
 html,
 body {
   height: 100vh;
@@ -22,9 +22,21 @@ svg {
 }
 
 .lf-dndpanel {
-  max-height: 100vh;
+  height: 100vh;
+  padding: 0 !important;
+  margin: 0 !important;
   flex-direction: column;
   flex-wrap: wrap;
   display: flex;
 }
+.uml-wrapper{
+  .uml-head{
+    .uml-title{
+       font-weight: bold;
+       font-size: 16px;
+    }
+  }
+}
+
+
 </style>

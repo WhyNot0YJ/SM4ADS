@@ -1,9 +1,9 @@
 <template>
     <div class="App">
         <header class="App-header">
-            <img src="@/assets/img/logo.jpg" class="App-logo" alt="logo" />
+            <img src="@/assets/img/logo.png" class="App-logo" alt="logo" />
             <p style="paddingTop: 64px">
-                Welcome to Trustworthy AI in CPS.
+                Welcome to Risk and Safety Modeling for ADS.
             </p>
         </header>
     </div>

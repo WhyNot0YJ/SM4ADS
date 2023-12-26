@@ -1,17 +1,12 @@
-import { ClassDiagramRadius, ClassDiagramRadiusModel, whiteList } from "../index";
+import {
+  ClassDiagramRadius,
+  ClassDiagramRadiusModel,
+} from "../index";
 import { ODCType, HARAType } from "./type";
 class ODCModel extends ClassDiagramRadiusModel {
   initNodeData(data: any) {
     super.initNodeData(data);
-    let num = 0;
-    whiteList.forEach((item) => {
-      data.properties.hasOwnProperty(item) && num++;
-    });
-    if (Object.keys(data.properties).length === num) {
-      this.setProperties(new ODCType());
-    } else {
-      this.setProperties(data.properties);
-    }
+    this.setProperties(Object.assign(new ODCType(), data.properties));
   }
 }
 class ODC extends ClassDiagramRadius {}
@@ -24,15 +19,7 @@ export const odc = {
 class HARAModel extends ClassDiagramRadiusModel {
   initNodeData(data: any) {
     super.initNodeData(data);
-    let num = 0;
-    whiteList.forEach((item) => {
-      data.properties.hasOwnProperty(item) && num++;
-    });
-    if (Object.keys(data.properties).length === num) {
-      this.setProperties(new HARAType());
-    } else {
-      this.setProperties(data.properties);
-    }
+    this.setProperties(Object.assign(new HARAType(), data.properties));
   }
 }
 class HARA extends ClassDiagramRadius {}

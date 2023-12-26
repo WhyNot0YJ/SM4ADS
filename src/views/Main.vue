@@ -1,8 +1,8 @@
 <template>
     <el-header>
-        <div class="logo"><img src="@/assets/img/logo.jpg" alt=""></div>
+        <div class="logo"><img src="@/assets/img/logo.png" alt=""></div>
 
-        <div class="text">Trustworthy AI in CPS：Modeling, Simulation and Verification</div>
+        <div class="text">Risk and Safety Modeling for ADS</div>
         <div class="btn">
             <el-button>Register</el-button>
             <el-button>Login</el-button>

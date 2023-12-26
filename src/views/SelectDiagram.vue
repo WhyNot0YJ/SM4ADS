@@ -18,7 +18,7 @@
           <el-menu-item index="BlockDefinitionDiagram">Block Definition Diagram</el-menu-item>
           <el-menu-item index="InternalBlockDiagram">Internal Block Diagram</el-menu-item>
           <el-menu-item index="PackageDiagram">Package Diagram</el-menu-item>
-          <el-menu-item index="ArtificialNeuralNetworkDiagram">Artificial Neural Network Diagram</el-menu-item>
+          <el-menu-item index="ParametricDiagram">Parametric Diagram</el-menu-item>
         </el-sub-menu>
       </el-sub-menu>
     </el-menu>

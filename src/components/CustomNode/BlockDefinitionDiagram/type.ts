@@ -60,11 +60,9 @@ class Compile {
   metrics: string = "";
   loss: string = "";
 }
-export class ANNType {
-  caculation: string = "";
-  RPN: string = "";
+export class CNNType {
   description: string = "";
-  trustWorthy: Trustworthy = new Trustworthy();
+  trustworthy: Trustworthy = new Trustworthy();
   propagation: Propagation = new Propagation();
   layer: Layer = new Layer();
   compile: Compile = new Compile();

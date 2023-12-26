@@ -33,6 +33,11 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import("@/views/RequirementDiagram.vue"),
       },
       {
+        path: "activityDiagram",
+        name: "ActivityDiagram",
+        component: () => import("@/views/ActivityDiagram.vue"),
+      },
+      {
         path: "blockDefinitionDiagram",
         name: "BlockDefinitionDiagram",
         component: () => import("@/views/BlockDefinitionDiagram.vue"),
@@ -41,6 +46,16 @@ const routes: Array<RouteRecordRaw> = [
         path: "internalBlockDiagram",
         name: "InternalBlockDiagram",
         component: () => import("@/views/InternalBlockDiagram.vue"),
+      },
+      {
+        path: "stateMachineDiagram",
+        name: "StateMachineDiagram",
+        component: () => import("@/views/StateMachineDiagram.vue"),
+      },
+      {
+        path: "useCaseDiagram",
+        name: "UseCaseDiagram",
+        component: () => import("@/views/UseCaseDiagram.vue"),
       },
     ],
   },
