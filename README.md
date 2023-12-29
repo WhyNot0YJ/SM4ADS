@@ -1,12 +1,10 @@
-# SM4ADS (System Modeling for ADS)
-
-
+# SM4ADS 
 
 ![image-20231229134818540](public/image-20231229134818540.png)
 
 ## Project Overview
 
-SM4ADS is a specialized graphical modeling tool developed for the field of ADS (Automated driving systems). It utilizes the SysML (System Modeling Language) for modeling purposes. This tool primarily extends five types of diagrams : Requirement Diagram,Block Definition Diagram,Internal Block Definition,Activity Diagram,State Machine Diagram . The tool aims  to assist developers and engineers in modeling and designing ADS more efficiently.
+SM4ADS is a specialized graphical modeling tool developed for the field of ADS (Automated Driving Systems). It utilizes the SysML (System Modeling Language) for modeling purposes. This tool primarily extends five types of diagrams : Requirement Diagram,Block Definition Diagram,Internal Block Definition,Activity Diagram,State Machine Diagram . The tool aims  to assist developers and engineers in modeling and designing ADS more efficiently.
 
 ## Key Features
 
