@@ -1,4 +1,4 @@
-# SM4ADS (System Modeling for Autonomous Driving Systems)
+# SM4ADS (System Modeling for ADS)
 
 
 
@@ -6,7 +6,7 @@
 
 ## Project Overview
 
-SM4ADS is a specialized graphical modeling tool developed for the field of autonomous driving systems. It utilizes the SysML (System Modeling Language) for modeling purposes. This tool primarily extends five types of diagrams:
+SM4ADS is a specialized graphical modeling tool developed for the field of (ADS) autonomous driving systems. It utilizes the SysML (System Modeling Language) for modeling purposes. This tool primarily extends five types of diagrams:
 
 - Requirement Diagram
 - Block Definition Diagram
@@ -14,15 +14,15 @@ SM4ADS is a specialized graphical modeling tool developed for the field of auton
 - Activity Diagram
 - State Machine Diagram
 
-The tool aims to assist developers and engineers in modeling and designing autonomous driving systems more efficiently.
+The tool aims to assis and engineers in modeling and designing ADS more efficiently.
 
 ## Key Features
 
-- **Requirement Diagram:** Describes system requirements and specifications.
-- **Block Definition Diagram:** Defines various modules in the system and their relationships.
-- **Internal Block Definition:** Illustrates the structure and interaction of internal modules in the system.
-- **Activity Diagram:** Displays the behavior of various operations and processes in the system.
-- **State Machine Diagram:** Describes state transitions of modules or objects within the system.
+- **Requirement Diagram:** it can be used to model the safety goals and functional safety requirements in ADS. Additionally, it's helpful in modeling the constraints of Operational Domain Design(ODD).
+- **Block Definition Diagram:** it can be used to model various AI components within ADS, especially for modeling the perception component utilizing CNN technology.
+- **Internal Block Definition:** it can be used to model the inner structure of AI components within ADS. To improve the expression, we've extended four more ports to model different kinds of interaction behaviors between AI components.
+- **Activity Diagram:** it can be used to model the risk propagation path between individual AI components. For example, the failure or fault withnin perception component might have effects on decision-making component.
+- **State Machine Diagram:** it can be used to model hazardous event that might trigger the component into failure state. We've also extended clock constraints on the trigger event so that we can further model-check the state transition of system state automata.
 
 ## Installation and Usage
 
