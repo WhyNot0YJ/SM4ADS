@@ -62,16 +62,16 @@ const initDndPanel = () => {
                 });
             }
         },
-        {
-            type: 'rect_radius',
-            label: 'rounded rect',
-            icon: 'src/assets/svg/圆角矩形.svg',
-        },
-        {
-            type: 'rect_dasharray',
-            label: 'dashed rect',
-            icon: 'src/assets/svg/虚线矩形.svg',
-        },
+        // {
+        //     type: 'rect_radius',
+        //     label: 'rounded rect',
+        //     icon: 'src/assets/svg/圆角矩形.svg',
+        // },
+        // {
+        //     type: 'rect_dasharray',
+        //     label: 'dashed rect',
+        //     icon: 'src/assets/svg/虚线矩形.svg',
+        // },
         {
             type: 'class_diagram_radius',
             label: 'component',
@@ -85,7 +85,7 @@ const initDndPanel = () => {
             type: 'class_diagram_radius',
             label: 'location',
             properties: {
-                title: 'location',
+                title: 'Location',
                 type: 'AI Component'
             },
             icon: 'src/assets/svg/AIcomponent.svg',
@@ -93,7 +93,7 @@ const initDndPanel = () => {
         {
             type: 'class_diagram_radius',
             properties: {
-                title: 'control',
+                title: 'Control',
                 type: 'AI Component'
             },
             label: 'control',
@@ -102,7 +102,7 @@ const initDndPanel = () => {
         {
             type: 'class_diagram_radius',
             properties: {
-                title: 'planning',
+                title: 'Planning',
                 type: 'AI Component',
             },
             label: 'planning',
@@ -111,13 +111,21 @@ const initDndPanel = () => {
         {
             type: 'object_perception',
             properties: {
-                title: 'perception',
+                title: 'Perception',
                 type: 'AI Component',
             },
             label: 'perception',
             icon: 'src/assets/svg/AIcomponent.svg',
         },
-
+        {
+            type: 'class_diagram_radius',
+            properties: {
+                title: 'Decision-making',
+                type: 'AI Component'
+            },
+            label: 'decision',
+            icon: 'src/assets/svg/AIcomponent.svg',
+        },
         {
             type: 'cnn',
             properties: {
@@ -137,19 +145,25 @@ const initDndPanel = () => {
             label: 'FMEA',
             icon: 'src/assets/svg/圆角矩形.svg',
         },
-        {
-            type: 'custom_group',
-            label: 'group',
-            icon: 'src/assets/svg/虚线矩形.svg',
-        },
-        {
-            type: 'perception',
-            label: 'perception',
-            properties: {
-                iconClass: 'AI-component',
-            },
-            icon: 'src/assets/svg/perception.svg',
-        },
+        // {
+        //     type: 'custom_group',
+        //     label: 'group',
+        //     icon: 'src/assets/svg/虚线矩形.svg',
+        // },
+        // {
+        //     type: 'perception',
+        //     label: 'perception',
+        //     properties: {
+        //         iconClass: 'AI-component',
+        //     },
+        //     icon: 'src/assets/svg/perception.svg',
+        // },
+
+        {},
+        {},
+        {},
+        {},
+        {},
         {
             type: 'svg',
             text: 'lane',
@@ -159,6 +173,7 @@ const initDndPanel = () => {
             label: 'lane',
             icon: 'src/assets/svg/lane.svg',
         },
+
         {
             type: 'svg',
             text: 'camera',
@@ -258,6 +273,7 @@ const initDndPanel = () => {
             label: 'truck',
             icon: 'src/assets/svg/truck.svg',
         },
+        {},
         {
             label: 'polyline',
             icon: 'src/assets/svg/polyline.svg',
