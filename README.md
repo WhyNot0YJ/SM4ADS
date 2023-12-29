@@ -2,7 +2,7 @@
 
 
 
-![image-20231229134818540](C:\Users\yujie\AppData\Roaming\Typora\typora-user-images\image-20231229134818540.png)
+![image-20231229134818540](public\image-20231229134818540.png)
 
 ## Project Overview
 
@@ -45,11 +45,11 @@ Make sure to review the `package.json` file for additional available scripts or 
 
 ## Example Screenshots/Demo
 
-![image-20231229134905031](C:\Users\yujie\AppData\Roaming\Typora\typora-user-images\image-20231229134905031.png)
+![image-20231229134905031](public\image-20231229134905031.png)
 
-![image-20231229134920026](C:\Users\yujie\AppData\Roaming\Typora\typora-user-images\image-20231229134920026.png)
+![image-20231229134920026](public\image-20231229134920026.png)
 
-![image-20231229134933831](C:\Users\yujie\AppData\Roaming\Typora\typora-user-images\image-20231229134933831.png)
+![image-20231229134933831](public\image-20231229134933831.png)
 
 ## Contribution
 
